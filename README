@@ -1,0 +1,9 @@
+SET UP GIT:
+
+1. Follow:
+
+http://help.github.com/linux-set-up-git/
+
+2. If you have problems with ssh authentication, then make sure you add your ssh key to the os:
+
+http://pedrolinhares.wordpress.com/2010/04/10/creating-a-public-key-for-using-in-github/
