@@ -1,5 +1,6 @@
 package com.dan.test.reactor;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -27,15 +28,16 @@ public class Main {
 
         /**
          * The queue that will contain all the messages. Will add elements in it concurrently, will read from it
-         * synchronously.
+         * synchronously. Offers blocking take() method.
          */
         final LinkedBlockingQueue<Message> messageQueue = new LinkedBlockingQueue<Message>();
 
         /**
-         * Used for concurrent message producing.
+         * Used for concurrent message producing. Multiple producer produce messages to the same queue.
          */
         final ExecutorService executorService = Executors.newFixedThreadPool(producerNumber);
 
+        //  Each producer produces a number of messages in the queue.
         for (int i = 0; i < producerNumber; i ++) {
             final int currentProducer = i;
             executorService.submit(new Runnable() {
@@ -48,7 +50,9 @@ public class Main {
                         try {
                             //  Sleeping until this producer prepares next message.
                             //  We do this in order to intertwine messages in the queue
-                            Thread.sleep(100);
+                            //  The sleep time ought to simulate some sort of randomness for the message producing
+                            final Random random = new Random();
+                            Thread.sleep(random.nextInt(10)* 100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -63,10 +67,13 @@ public class Main {
                 System.out.println(">>> Starting consumer thread...");
                 Message message = null;
                 try {
-                    while ((message = messageQueue.take()) != null) {
+                    while (true) {
+                        //  blocking wait - might throw InterruptedException
+                        message = messageQueue.take();
                         System.out.println("Handling message " + message.content);
                     }
                 } catch (InterruptedException e) {
+                    //  Exception not handled
                     e.printStackTrace();
                 }
             }
