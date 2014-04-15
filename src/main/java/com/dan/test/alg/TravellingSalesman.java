@@ -53,13 +53,13 @@ public class TravellingSalesman {
         } else {
             for (int i = 0; i < lastStep; i ++) {
                 if (picked[i] == false) {
-                    picked[i] = true;
-                    permutation[currentStep] = i;
-                    int travelCost = cost[permutation[currentStep - 1]][i];
-                    if (travelCost > 0) {
-                        generatePermutations(currentStep + 1, lastStep, accumulatedSum + (currentStep == 0 ? 0 : travelCost));
+                    int travelCost = currentStep == 0 ? 0 : cost[permutation[currentStep - 1]][i];
+                    if (travelCost >= 0) {
+                        picked[i] = true;
+                        permutation[currentStep] = i;
+                        generatePermutations(currentStep + 1, lastStep, accumulatedSum + travelCost);
+                        picked[i] = false;
                     }
-                    picked[i] = false;
                 }
             }
         }
