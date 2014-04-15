@@ -18,11 +18,11 @@ public class TravellingSalesman {
     //  N is the number of elements when we generate the permutations
     private static final int n = 10;
 
-    //  Keep track if element "i" was visited by inspecting the viz[i] value
-    private static boolean [] viz = new boolean [n];
+    //  Keep track if element "i" was visited by inspecting the picked[i] value
+    private static boolean [] picked = new boolean [n];
 
-    //  Keep track of the element chosen at position "i" in elem[i]
-    private static int [] elem = new int [n];
+    //  Keep track of the element chosen at position "i" in permutation[i]
+    private static int [] permutation = new int [n];
 
     private static int cost [] [] = new int [] [] {
             {0, 2, 3, 7},
@@ -31,8 +31,10 @@ public class TravellingSalesman {
             {1, 34, 11, 0}
     };
 
+    //  Track the minimum sum of the permutations
     private static int minimumSum = Integer.MAX_VALUE;
 
+    //  Track the minimum permutation
     private static int [] minimumPermutation = new int [n];
 
     private static void generatePermutations(int currentStep, int lastStep, int accumulatedSum) {
@@ -42,20 +44,22 @@ public class TravellingSalesman {
         }
 
         if (currentStep == lastStep) {
-            accumulatedSum += cost[elem[lastStep - 1]][elem[0]];
+            accumulatedSum += cost[permutation[lastStep - 1]][permutation[0]];
             if (accumulatedSum < minimumSum) {
                 minimumSum = accumulatedSum;
-                System.arraycopy(elem, 0, minimumPermutation, 0, elem.length);
+                System.arraycopy(permutation, 0, minimumPermutation, 0, permutation.length);
             }
-            System.out.println(Arrays.toString(elem));
+            System.out.println(Arrays.toString(permutation));
         } else {
             for (int i = 0; i < lastStep; i ++) {
-                if (viz[i] == false) {
-                    viz[i] = true;
-                    elem[currentStep] = i;
-                    generatePermutations(currentStep + 1, lastStep,
-                            accumulatedSum + (currentStep == 0 ? 0 : cost[elem[currentStep - 1]][i]));
-                    viz[i] = false;
+                if (picked[i] == false) {
+                    picked[i] = true;
+                    permutation[currentStep] = i;
+                    int travelCost = cost[permutation[currentStep - 1]][i];
+                    if (travelCost > 0) {
+                        generatePermutations(currentStep + 1, lastStep, accumulatedSum + (currentStep == 0 ? 0 : travelCost));
+                    }
+                    picked[i] = false;
                 }
             }
         }
