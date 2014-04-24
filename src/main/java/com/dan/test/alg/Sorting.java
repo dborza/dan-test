@@ -98,14 +98,13 @@ public class Sorting {
             int ir = 0;
 
             for (int ia = 0; ia < a.length; ia ++) {
-                while (b[ib] <= a[ia]) {
+                while (ib < b.length && b[ib] <= a[ia]) {
                     result[ir] = b[ib];
                     ir ++;
                     ib ++;
                 }
                 result[ir] = a[ia];
                 ir ++;
-                ia ++;
             }
 
             while (ib < b.length) {
