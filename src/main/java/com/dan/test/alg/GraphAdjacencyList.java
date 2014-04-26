@@ -86,6 +86,10 @@ public class GraphAdjacencyList {
             throw new IllegalArgumentException("Input graph must not be null.");
         }
 
+        if (start == null) {
+            throw new IllegalArgumentException("Input vertex must not be null.");
+        }
+
         final List<Vertex> returnList = new LinkedList<Vertex>();
 
         final Queue<Vertex> toVisit = new LinkedList<Vertex>();
@@ -108,9 +112,48 @@ public class GraphAdjacencyList {
             }
         }
 
-        //  Start with a node
-        //  Iterate through all it's neighbours
-        //  Do the thing you want to do on them and put them in the queue
+        return returnList;
+    }
+
+    /**
+     * Do a Depth First Search on a {@link Graph} starting with a given {@link Vertex}.
+     *
+     * @return a {@code List} of {@link Vertex}es processed in the order of dfs.
+     */
+    static List<Vertex> dfs(Graph g, Vertex start) {
+
+        if (g == null) {
+            throw new IllegalArgumentException("Input graph must not be null.");
+        }
+
+        if (start == null) {
+            throw new IllegalArgumentException("Input vertex must not be null.");
+        }
+
+        final List<Vertex> returnList = new LinkedList<Vertex>();
+
+        final Stack<Vertex> toVisit = new Stack<Vertex>();
+        toVisit.push(start);
+
+        while (!toVisit.isEmpty()) {
+
+            final Vertex current = toVisit.pop();
+            returnList.add(current);
+
+            final List<Edge> edges = g.adjacencyList.get(current);
+
+            if (edges != null) {
+                for (final Edge e : edges) {
+                    if (!toVisit.contains(e.y) && !returnList.contains(e.y)) {
+                        toVisit.push(e.y);
+                        break;
+                    }
+                }
+            }
+        }
+
+        //  For a given node, process it
+        //  Take it's first unvisited descendant, insert it and start over
 
         return returnList;
     }
@@ -128,10 +171,12 @@ public class GraphAdjacencyList {
         Edge e3 = new Edge(v5, v4, 3);
         Edge e4 = new Edge(v4, v3, 4);
         Edge e5 = new Edge(v5, v1, 5);
+        Edge e6 = new Edge(v2, v5, 5);
 
-        Graph g = new Graph(e1, e2, e3, e4, e5);
+        Graph g = new Graph(e1, e2, e3, e4, e5, e6);
 
         System.out.println(bfs(g, v1));
+        System.out.println(dfs(g, v1));
     }
 
 
